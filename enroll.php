@@ -185,7 +185,7 @@ if (isset($_SESSION['status'])){
     </div>
     <div class="col">
       <div data-mdb-input-init class="form-outline">
-        <input type="text" id="elemYear" name="elemYear" class="form-control" placeholder="Year Graduated"/ required>
+        <input type="text" id="elemYear" name="elemYear" maxlength="4" class="form-control" placeholder="Year Graduated"/ required>
       </div>
     </div>
   </div>
@@ -198,7 +198,7 @@ if (isset($_SESSION['status'])){
     </div>
     <div class="col">
       <div data-mdb-input-init class="form-outline">
-        <input type="text" id="juniorYear" name="juniorYear" class="form-control" placeholder="Year Graduated"/ required>
+        <input type="text" id="juniorYear" name="juniorYear" maxlength="4" class="form-control" placeholder="Year Graduated"/ required>
       </div>
     </div>
   </div>
@@ -211,7 +211,7 @@ if (isset($_SESSION['status'])){
     </div>
     <div class="col">
       <div data-mdb-input-init class="form-outline">
-        <input type="text" id="seniorYear" name="seniorYear" class="form-control" placeholder="Year Graduated"/ required>
+        <input type="text" id="seniorYear" name="seniorYear" maxlength="4" class="form-control" placeholder="Year Graduated"/ required>
       </div>
     </div>
   </div>
