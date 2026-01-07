@@ -1,10 +1,11 @@
 <?php
 // site profile updated by admin (auto)
-$SITE_INST = 'Arayat institu';
+$SITE_INST = 'Arayat instituaaaaaaaaa';
 $SITE_LOCATION = 'Arayat, Pampanga';
 $SITE_EMAIL = 'unknown@gmail.com';
 $SITE_PHONE = '09750737973';
 $SITE_TTY = '0975073797355';
+
 
 
 
@@ -38,6 +39,7 @@ $SITE_NAME = 'DevOps System';
 
 // Additional site-wide settings can go here
 ?>
+
 
 
 

@@ -149,7 +149,26 @@ if ($fRes && $fRes->num_rows > 0) {
   }
 }
 ?>
-
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger" id="errorModalLabel">Login Error</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h5 id="errorMessage">Incorrect username or password. Please try again.</h5>
+      </div>
+    </div>
+  </div>
+</div>
+<?php
+if (isset($_SESSION['error'])){
+    echo '<script>document.addEventListener("DOMContentLoaded", function() { const modal = new bootstrap.Modal(document.getElementById("errorModal")); modal.show(); });</script>';
+    unset($_SESSION['error']);
+}
+?>
 <!--Yung login modal-->
 <div class="modal p-4" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -176,12 +195,6 @@ if ($fRes && $fRes->num_rows > 0) {
                 <input type="password" name="password" class="password" id="pwd" placeholder="Password">
                 <i class="fa-solid fa-eye me-3 fs-5 cursor-pointer" id="icon"></i>
             </div>
-            <?php
-                if (isset($_SESSION['error'])){
-                    echo '<div class="mb-2" style="color: red;"><h6>'.$_SESSION['error'].'</h6></div>';
-                    unset($_SESSION['error']);
-                }
-                ?>
             <button class="btn mt-3">Login</button>
         </form>
         <div class="text-center fs-6 mb-3">
@@ -189,6 +202,10 @@ if ($fRes && $fRes->num_rows > 0) {
         </div>
     </div>
 </div>
+
+
+
+
 
 
 

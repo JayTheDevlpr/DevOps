@@ -27,16 +27,24 @@ $appointment_date = $_POST['appointment_date'];
 $time = $_POST['time'];
 $appointment_id = isset($_POST['appointmentID']) ? intval($_POST['appointmentID']) : 0;
 
+// Check if username already exists
+$check_sql = "SELECT id FROM enroll WHERE username = '$username@student'";
+$check_result = $conn->query($check_sql);
+if ($check_result->num_rows > 0) {
+    $_SESSION['exist'] = "Username already exists. Please choose a different username.";
+    header("Location: ../enroll.php");
+    exit();
+}
 
 $sql = "INSERT INTO enroll (username, password, email, elemName, elemYear, juniorName, juniorYear, seniorName, seniorYear, lastname, firstname, middlename, sex, dob, phonenumber, guardianName, guardianPhoneNumber, guardianAddress, course, year, section, status, appointment_date, time)
-VALUES ('$username', '$password', '$email', '$elemName', '$elemYear', '$juniorName', '$juniorYear', '$seniorName', '$seniorYear', '$lastname', '$firstname', '$middlename', '$sex', '$dob', '$phonenumber', '$guardianName', '$guardianPhoneNumber', '$guardianAddress', '$course', '$year', '". $section ."','PENDING','$appointment_date','$time')";
+VALUES ('$username@student', '$password', '$email', '$elemName', '$elemYear', '$juniorName', '$juniorYear', '$seniorName', '$seniorYear', '$lastname', '$firstname', '$middlename', '$sex', '$dob', '$phonenumber', '$guardianName', '$guardianPhoneNumber', '$guardianAddress', '$course', '$year', '". $section ."','PENDING','$appointment_date','$time')";
 if ($conn->query($sql) === TRUE) {
   // decrement slots if appointment was selected
   if ($appointment_id > 0) {
     $u = $conn->prepare("UPDATE appointments SET slots = GREATEST(slots - 1, 0) WHERE id = ?");
     if ($u) { $u->bind_param('i', $appointment_id); $u->execute(); $u->close(); }
   }
-  $_SESSION['status'] = "Enrollment Successful";
+  $_SESSION['status'] = "Enrollment Successfully, Please wait for the admin to confirm your enrollment.";
   header("Location: ../enroll.php");
 } else {
   echo "Error: " . $sql . "<br>" . $conn->error;

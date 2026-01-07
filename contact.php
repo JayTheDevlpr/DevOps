@@ -80,23 +80,25 @@ require_once __DIR__ . '/config/site.php';
                       <textarea class="form-control" id="message" name="message" rows="4" placeholder="Enter your message" required></textarea>
                     </div>
 
-                    <label class="form-label" for="captcha">Captcha:</label>
+                    
                     <div class="row mb-1">
                       <div class="col">
+                        <label class="form-label" for="captcha">Captcha:</label>
                         <div data-mdb-input-init class="form-outline">
                           <p id="captchaDisplay" class="fw-bold fs-5"></p>
                         </div>
                       </div>
                       <div class="col">
                         <div data-mdb-input-init class="form-outline">
+                          <label class="form-label" for="captcha">Code:</label>
                           <input type="text" id="captchaInput" name="captcha" class="form-control" placeholder="Enter code" required/>
                         </div>
                       </div>
                     </div>
-                    <div id="captchaError" class="text-danger mt-2" style="display: none;">Captcha code is incorrect. Please try again.</div>
+                    <div id="captchaError" class="alert alert-danger mt-2" role="alert" style="display: none;">Captcha code is incorrect. Please try again.</div>
                     <?php
                     if (isset($_SESSION['success'])){
-                    echo '<div class="mt-2 text-success"><h6>'.$_SESSION['success'].'</h6></div>';
+                    echo '<div class="mt-2 alert alert-success" role="alert">'.$_SESSION['success'].'</div>';
                     unset($_SESSION['success']);
                     }?>
                     <!-- Submit button -->
@@ -174,7 +176,15 @@ require_once __DIR__ . '/config/site.php';
   });
 
   // Generate random captcha
-  let captchaCode = Math.floor(100000 + Math.random() * 900000).toString();
+  function generateCaptcha() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz';
+    let result = '';
+    for (let i = 0; i < 6; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+  let captchaCode = generateCaptcha();
   document.getElementById('captchaDisplay').textContent = captchaCode;
 
   // Handle send button click
@@ -187,7 +197,7 @@ require_once __DIR__ . '/config/site.php';
     } else {
       errorDiv.style.display = 'block';
       // Regenerate captcha on failure
-      captchaCode = Math.floor(100000 + Math.random() * 900000).toString();
+      captchaCode = generateCaptcha();
       document.getElementById('captchaDisplay').textContent = captchaCode;
       document.getElementById('captchaInput').value = '';
     }

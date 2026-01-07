@@ -2,6 +2,12 @@
 SESSION_START();
 require_once 'dbcon.php';
 
+if (isset($_POST['logout'])) {
+    session_destroy();
+    header("Location: ../index.php");
+    exit();
+}
+
 $username = $_POST['username'];
 $password = $_POST['password'];
  
@@ -10,6 +16,7 @@ $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
   while($row = $result->fetch_assoc()) {
+    $_SESSION['logged_in'] = true;
     header("Location: ../content_management.php");
   }
 } else {

@@ -123,7 +123,10 @@ body { margin-left: 84px; }
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <a href="config/loginAuth.php?logout=1" class="btn btn-danger">Logout</a>
+        <form method="POST" action="config/loginAuth.php" style="display: inline;">
+          <input type="hidden" name="logout" value="1">
+          <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
       </div>
     </div>
   </div>

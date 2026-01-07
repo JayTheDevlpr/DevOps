@@ -55,6 +55,10 @@ if (isset($_SESSION['status'])){
     echo '<div class="container mt-4 mb-4 alert alert-success" role="alert">
     '.$_SESSION['status'].'</div>';
     unset($_SESSION['status']);
+}else if (isset($_SESSION['exist'])){
+    echo '<div class="container mt-4 mb-4 alert alert-danger" role="alert">
+    '.$_SESSION['exist'].'</div>';
+    unset($_SESSION['exist']);
 }
 ?>
 <!--yung enrollment form section-->
@@ -159,17 +163,17 @@ if (isset($_SESSION['status'])){
       <div class="mb-3">
         <label for="username" class="form-label">Username:</label>
         <div class="input-group">
-          <input type="text" class="form-control" id="Username" name="username" placeholder="Username" required>
+          <input type="text" autocomplete="off" class="form-control" id="Username" name="username" placeholder="Username" required>
           <div class="input-group-text">@Student</div>
         </div>
       </div>
         <div class="mb-3">
             <label for="email" class="form-label">Email address:</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+            <input type="email" autocomplete="off" class="form-control" id="email" name="email" placeholder="name@example.com" required>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password:</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+            <input type="password" autocomplete="off" class="form-control" id="password" name="password" placeholder="Enter your password" required>
         </div>
 </div>
 
@@ -180,12 +184,12 @@ if (isset($_SESSION['status'])){
       <div class="row mb-4">
     <div class="col-8">
       <div data-mdb-input-init class="form-outline">
-        <input type="text" id="elemName" name="elemName" class="form-control" placeholder="School Name"/ required>
+        <input type="text" autocomplete="off" id="elemName" name="elemName" class="form-control" placeholder="School Name"/ required>
       </div>
     </div>
     <div class="col">
       <div data-mdb-input-init class="form-outline">
-        <input type="text" id="elemYear" name="elemYear" maxlength="4" class="form-control" placeholder="Year Graduated"/ required>
+        <input type="text" autocomplete="off" id="elemYear" name="elemYear" maxlength="4" class="form-control" placeholder="Year Graduated"/ required>
       </div>
     </div>
   </div>
@@ -193,12 +197,12 @@ if (isset($_SESSION['status'])){
   <div class="row mb-4">
     <div class="col-8">
       <div data-mdb-input-init class="form-outline">
-        <input type="text" id="juniorName" name="juniorName" class="form-control" placeholder="School Name"/ required>
+        <input type="text" autocomplete="off" id="juniorName" name="juniorName" class="form-control" placeholder="School Name"/ required>
       </div>
     </div>
     <div class="col">
       <div data-mdb-input-init class="form-outline">
-        <input type="text" id="juniorYear" name="juniorYear" maxlength="4" class="form-control" placeholder="Year Graduated"/ required>
+        <input type="text" autocomplete="off" id="juniorYear" name="juniorYear" maxlength="4" class="form-control" placeholder="Year Graduated"/ required>
       </div>
     </div>
   </div>
@@ -206,12 +210,12 @@ if (isset($_SESSION['status'])){
   <div class="row mb-4">
     <div class="col-8">
       <div data-mdb-input-init class="form-outline">
-        <input type="text" id="seniorName" name="seniorName" class="form-control" placeholder="School Name"/ required>
+        <input type="text" autocomplete="off" id="seniorName" name="seniorName" class="form-control" placeholder="School Name"/ required>
       </div>
     </div>
     <div class="col">
       <div data-mdb-input-init class="form-outline">
-        <input type="text" id="seniorYear" name="seniorYear" maxlength="4" class="form-control" placeholder="Year Graduated"/ required>
+        <input type="text" autocomplete="off" id="seniorYear" name="seniorYear" maxlength="4" class="form-control" placeholder="Year Graduated"/ required>
       </div>
     </div>
   </div>
@@ -225,17 +229,17 @@ if (isset($_SESSION['status'])){
     <div class="row mb-3">
     <div class="col">
       <div data-mdb-input-init class="form-outline">
-        <input type="text" id="lastname" name="lastname" class="form-control" placeholder="Last Name"/ required>
+        <input type="text" autocomplete="off" id="lastname" name="lastname" class="form-control" placeholder="Last Name"/ required>
       </div>
     </div>
     <div class="col">
       <div data-mdb-input-init class="form-outline">
-        <input type="text" id="firstname" name="firstname" class="form-control" placeholder="First Name"/ required>
+        <input type="text" autocomplete="off" id="firstname" name="firstname" class="form-control" placeholder="First Name"/ required>
       </div>
     </div>
     <div class="col">
       <div data-mdb-input-init class="form-outline">
-        <input type="text" id="middlename" name="middlename" class="form-control" placeholder="Middle Name"/ required>
+        <input type="text" autocomplete="off" id="middlename" name="middlename" class="form-control" placeholder="Middle Name"/ required>
       </div>
     </div>
   </div>
@@ -262,17 +266,17 @@ if (isset($_SESSION['status'])){
   <label for="Number" class="form-label">Contact Number:</label>
     <div class="input-group mb-3">
       <div class="input-group-text">+63</div>
-      <input type="text" class="form-control" id="phoneNumber" maxlength="10" name="phoneNumber" placeholder="9XXXXXXXXX" required>
+      <input type="text" autocomplete="off" class="form-control" id="phoneNumber" maxlength="10" name="phoneNumber" placeholder="9XXXXXXXXX" required>
     </div>
 
     <label for="address" class="form-label">Home Address:</label>
-      <textarea type="text" class="form-control" id="address" name="address" placeholder="Enter Full Address" required></textarea>
+      <textarea type="text" autocomplete="off" class="form-control" id="address" name="address" placeholder="Enter Full Address" required></textarea>
 
     <div class="row mb-3 mt-3">
     <div class="col">
       <div data-mdb-input-init class="form-outline">
         <label for="Gname" class="form-label">Guardian' Name:</label>
-        <input type="text" id="guardianName" name="guardianName" class="form-control" placeholder="Enter Guardian's Full Name" required/>
+        <input type="text" autocomplete="off" id="guardianName" name="guardianName" class="form-control" placeholder="Enter Guardian's Full Name" required/>
       </div>
     </div>
     <div class="col">
@@ -280,14 +284,14 @@ if (isset($_SESSION['status'])){
         <label for="Gnumber" class="form-label">Guardian's Contact Number:</label>
         <div class="input-group">
           <div class="input-group-text">+63</div>
-          <input type="text" class="form-control" id="guardianPhoneNumber" maxlength="10" name="guardianPhoneNumber" placeholder="9XXXXXXXXX" required>
+          <input type="text" autocomplete="off" class="form-control" id="guardianPhoneNumber" maxlength="10" name="guardianPhoneNumber" placeholder="9XXXXXXXXX" required>
         </div>
       </div>
     </div>
   </div>
 
   <label for="Gaddress" class="form-label">Guardian's Home Address:</label>
-      <textarea type="text" class="form-control" id="guardianAddress" name="guardianAddress" placeholder="Enter Full Address of Guardian" required></textarea>
+      <textarea type="text" autocomplete="off" class="form-control" id="guardianAddress" name="guardianAddress" placeholder="Enter Full Address of Guardian" required></textarea>
     <hr>
     <p class="text-center mb-3" style="font-size: 1.5rem;">Student's Enrollment</p>
     <div class="row mb-3">
