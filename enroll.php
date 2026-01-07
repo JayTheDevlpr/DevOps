@@ -262,7 +262,7 @@ if (isset($_SESSION['status'])){
   <label for="Number" class="form-label">Contact Number:</label>
     <div class="input-group mb-3">
       <div class="input-group-text">+63</div>
-      <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="9XXXXXXXXX" required>
+      <input type="text" class="form-control" id="phoneNumber" maxlength="10" name="phoneNumber" placeholder="9XXXXXXXXX" required>
     </div>
 
     <label for="address" class="form-label">Home Address:</label>
@@ -280,7 +280,7 @@ if (isset($_SESSION['status'])){
         <label for="Gnumber" class="form-label">Guardian's Contact Number:</label>
         <div class="input-group">
           <div class="input-group-text">+63</div>
-          <input type="text" class="form-control" id="guardianPhoneNumber" name="guardianPhoneNumber" placeholder="9XXXXXXXXX" required>
+          <input type="text" class="form-control" id="guardianPhoneNumber" maxlength="10" name="guardianPhoneNumber" placeholder="9XXXXXXXXX" required>
         </div>
       </div>
     </div>
@@ -479,6 +479,13 @@ if (isset($_SESSION['status'])){
       form.submit();
     } else {
       form.reportValidity();
+    }
+  });
+
+  // Prevent typing '@' in username field
+  document.getElementById('Username').addEventListener('keypress', function(e) {
+    if (e.key === '@') {
+      e.preventDefault();
     }
   });
 </script>
