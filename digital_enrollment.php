@@ -170,7 +170,10 @@ include 'config/plugins.php';
 include __DIR__ . '/sidebar.php';
 ?>
 
-<div class="container-fluid my-4">
+<div class="container my-4">
+
+  <h1>Digital Enrollment Management</h1>
+  <p>Manage student enrollment and scheduling appointments.</p>
 
   <?php if (isset($_SESSION['status'])): ?>
     <div class="alert alert-<?php echo htmlspecialchars($_SESSION['status_type'] ?? 'info'); ?> alert-dismissible fade show" role="alert">
@@ -248,50 +251,37 @@ while ($row = $res->fetch_assoc()) {
             <th>Name</th>
             <th>Course</th>
             <th>Year</th>
-            <th>Status</th>
+            <th>Section</th>
             <th>Action</th>
+            
           </tr>
         </thead>
         <tbody>
-          <?php
-            $sq = $conn->prepare("SELECT * FROM enroll WHERE status = 'PENDING' ORDER BY id ASC");
-            $sq->execute();
-            $r = $sq->get_result();
-            if ($r && $r->num_rows > 0) {
-              while ($s = $r->fetch_assoc()) {
+           <?php
+            $stmt = $conn->prepare("SELECT * FROM enroll WHERE status = 'PENDING' ORDER BY lastname, firstname");
+            $stmt->execute();
+            $res = $stmt->get_result();
+            if ($res && $res->num_rows > 0) {
+              while ($s = $res->fetch_assoc()) {
                 $sid = (int)$s['id'];
                 $appointment_date = htmlspecialchars($s['appointment_date']);
                 $time = htmlspecialchars($s['time']);
                 $username = htmlspecialchars($s['username']);
                 $lastname = htmlspecialchars($s['lastname']);
                 $firstname = htmlspecialchars($s['firstname']);
-                $middlename = htmlspecialchars($s['middlename']);
-                $elemName = htmlspecialchars($s['elemName']);
-                $elemYear = htmlspecialchars($s['elemYear']);
-                $juniorName = htmlspecialchars($s['juniorName']);
-                $juniorYear = htmlspecialchars($s['juniorYear']);
-                $seniorName = htmlspecialchars($s['seniorName']);
-                $seniorYear = htmlspecialchars($s['seniorYear']);
-                $sex = htmlspecialchars($s['sex']);
-                $dob = htmlspecialchars($s['dob']);
-                $phonenumber = htmlspecialchars($s['phonenumber']);
-                $guardianName = htmlspecialchars($s['guardianName']);
-                $guardianPhoneNumber = htmlspecialchars($s['guardianPhoneNumber']);
-                $guardianAddress = htmlspecialchars($s['guardianAddress']);
+                $name = htmlspecialchars(trim($s['lastname'] . ', ' . $s['firstname']));
                 $course = htmlspecialchars($s['course']);
                 $year = htmlspecialchars($s['year']);
-                $section = htmlspecialchars($s['section'] ?? '');
-                $email = htmlspecialchars($s['email']);
-                $name = htmlspecialchars(trim($lastname . ', ' . $firstname));
-                echo '<tr>';
-                echo '<td>' . $appointment_date . '</td>';
-                echo '<td>' . htmlspecialchars($time) . '</td>';
-                echo '<td>' . $username . '</td>';
-                echo '<td>' . $name . '</td>';
-                echo '<td>' . $course . '</td>';
-                echo '<td>' . $year . '</td>';
-                echo '<td><span class="badge bg-warning text-dark">Pending</span></td>';
-                // compute number of matching subjects for this student's course/year
+                $status = strtoupper($s['status'] ?? 'PENDING');
+                if ($status === 'APPROVED') {
+                  $badge = '<span class="badge bg-success">Approved</span>';
+                } elseif ($status === 'REJECTED') {
+                  $badge = '<span class="badge bg-danger">Rejected</span>';
+                } else {
+                  $badge = '<span class="badge bg-warning text-dark">Pending</span>';
+                }
+
+                // compute matching subjects count for this student
                 $subCount = 0;
                 $sc = $conn->prepare("SELECT COUNT(*) AS cnt FROM subjects WHERE course = ? AND year_level = ?");
                 $sc->bind_param('ss', $s['course'], $s['year']);
@@ -302,35 +292,45 @@ while ($row = $res->fetch_assoc()) {
 
                 $dataAttrs = ' data-id="' . $sid . '"'
                   . ' data-username="' . $username . '"'
-                  . ' data-email="' . $email . '"'
+                  . ' data-email="' . htmlspecialchars($s['email']) . '"'
                   . ' data-lastname="' . $lastname . '"'
                   . ' data-firstname="' . $firstname . '"'
-                  . ' data-middlename="' . $middlename . '"'
-                  . ' data-elemname="' . $elemName . '"'
-                  . ' data-elemyear="' . $elemYear . '"'
-                  . ' data-juniorname="' . $juniorName . '"'
-                  . ' data-junioryear="' . $juniorYear . '"'
-                  . ' data-seniorname="' . $seniorName . '"'
-                  . ' data-senioryear="' . $seniorYear . '"'
-                  . ' data-sex="' . $sex . '"'
-                  . ' data-dob="' . $dob . '"'
-                  . ' data-phonenumber="' . $phonenumber . '"'
-                  . ' data-guardianname="' . $guardianName . '"'
-                  . ' data-guardianphone="' . $guardianPhoneNumber . '"'
-                  . ' data-guardianaddress="' . $guardianAddress . '"'
+                  . ' data-middlename="' . htmlspecialchars($s['middlename']) . '"'
+                  . ' data-elemname="' . htmlspecialchars($s['elemName']) . '"'
+                  . ' data-elemyear="' . htmlspecialchars($s['elemYear']) . '"'
+                  . ' data-juniorname="' . htmlspecialchars($s['juniorName']) . '"'
+                  . ' data-junioryear="' . htmlspecialchars($s['juniorYear']) . '"'
+                  . ' data-seniorname="' . htmlspecialchars($s['seniorName']) . '"'
+                  . ' data-senioryear="' . htmlspecialchars($s['seniorYear']) . '"'
+                  . ' data-sex="' . htmlspecialchars($s['sex']) . '"'
+                  . ' data-dob="' . htmlspecialchars($s['dob']) . '"'
+                  . ' data-phonenumber="' . htmlspecialchars($s['phonenumber']) . '"'
+                  . ' data-guardianname="' . htmlspecialchars($s['guardianName']) . '"'
+                  . ' data-guardianphone="' . htmlspecialchars($s['guardianPhoneNumber']) . '"'
+                  . ' data-guardianaddress="' . htmlspecialchars($s['guardianAddress']) . '"'
                   . ' data-course="' . $course . '"'
                   . ' data-year="' . $year . '"'
-                  . ' data-section="' . $section . '"'
-                  . ' data-appointment_date="' . $appointment_date . '"'
-                  . ' data-time="' . htmlspecialchars($time) . '"'
+                  . ' data-section="' . htmlspecialchars($s['section'] ?? '') . '"'
+                  . ' data-appointment_date="' . htmlspecialchars($s['appointment_date']) . '"'
+                  . ' data-time="' . htmlspecialchars($s['time']) . '"'
+                  . ' data-status="' . htmlspecialchars($status) . '"'
                   . ' data-subjects-count="' . $subCount . '"';
+
+                echo '<tr>';
+                echo '<td>' . $appointment_date . '</td>';
+                echo '<td>' . $time . '</td>';
+                echo '<td>' . $username . '</td>';
+                echo '<td>' . $name . '</td>';
+                echo '<td>' . $course . '</td>';
+                echo '<td>' . $year . '</td>';
+                echo '<td>' . $badge . '</td>';
                 echo '<td><button type="button" class="btn btn-sm btn-primary student-open"' . $dataAttrs . '>Open</button></td>';
                 echo '</tr>';
               }
             } else {
-              echo '<tr><td colspan="8">No pending students.</td></tr>';
+              echo '<tr><td colspan="7">No students found.</td></tr>';
             }
-            $sq->close();
+            $stmt->close();
           ?>
         </tbody>
       </table>
@@ -445,15 +445,40 @@ while ($row = $res->fetch_assoc()) {
           </form>
         </div>
         <div class="modal-footer">
-          <form method="post" id="approveForm" style="display:inline;">
-            <input type="hidden" name="id" id="approveId" value="">
-            <button type="submit" name="approve_student" class="btn btn-success">Approve</button>
-          </form>
-          <form method="post" id="rejectForm" style="display:inline; margin-left:6px;">
-            <input type="hidden" name="id" id="rejectId" value="">
-            <button type="submit" name="reject_student" class="btn btn-danger">Reject</button>
-          </form>
+          <button type="button" class="btn btn-success" id="approveBtn">Approve</button>
+          <button type="button" class="btn btn-danger" id="rejectBtn">Reject</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden forms for submission -->
+  <div style="display:none;">
+    <form method="post" id="approveForm">
+      <input type="hidden" name="id" id="approveId" value="">
+      <input type="hidden" name="approve_student" value="1">
+    </form>
+    <form method="post" id="rejectForm">
+      <input type="hidden" name="id" id="rejectId" value="">
+      <input type="hidden" name="reject_student" value="1">
+    </form>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmModalLabel">Confirm Action</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="confirmText">Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="confirmBtn">Confirm</button>
         </div>
       </div>
     </div>
@@ -493,6 +518,9 @@ while ($row = $res->fetch_assoc()) {
       var approveId = document.getElementById('approveId'); if (approveId) approveId.value = id;
       var rejectId = document.getElementById('rejectId'); if (rejectId) rejectId.value = id;
 
+      var approveBtnEl = document.getElementById('approveBtn');
+      if (approveBtnEl) approveBtnEl.setAttribute('data-subjects-count', btn.getAttribute('data-subjects-count'));
+
       var status = (btn.getAttribute('data-status') || '').toUpperCase();
       var approveForm = document.getElementById('approveForm');
       var rejectForm = document.getElementById('rejectForm');
@@ -501,7 +529,8 @@ while ($row = $res->fetch_assoc()) {
       // subjects count check
       var subjectsCount = parseInt(btn.getAttribute('data-subjects-count') || '0', 10);
       var approvalWarning = document.getElementById('approvalWarning');
-      var approveBtn = document.querySelector('#approveForm button[name="approve_student"]');
+      var approveBtn = document.getElementById('approveBtn');
+      var rejectBtn = document.getElementById('rejectBtn');
 
       if (status === 'PENDING') {
         if (subjectsCount <= 0) {
@@ -511,12 +540,12 @@ while ($row = $res->fetch_assoc()) {
           if (approvalWarning) approvalWarning.classList.add('d-none');
           if (approveBtn) approveBtn.disabled = false;
         }
-        if (approveForm) approveForm.style.display = 'inline';
-        if (rejectForm) rejectForm.style.display = 'inline';
+        if (approveBtn) approveBtn.style.display = 'inline';
+        if (rejectBtn) rejectBtn.style.display = 'inline';
         if (label) label.textContent = 'Student Details — Pending';
       } else {
-        if (approveForm) approveForm.style.display = 'none';
-        if (rejectForm) rejectForm.style.display = 'none';
+        if (approveBtn) approveBtn.style.display = 'none';
+        if (rejectBtn) rejectBtn.style.display = 'none';
         if (label) label.textContent = 'Student Details';
         if (approvalWarning) approvalWarning.classList.add('d-none');
         if (approveBtn) approveBtn.disabled = false;
@@ -527,6 +556,33 @@ while ($row = $res->fetch_assoc()) {
         var modal = new bootstrap.Modal(modalEl);
         modal.show();
       }
+    });
+  </script>
+
+  <script>
+    document.getElementById('approveBtn').addEventListener('click', function() {
+      var subjectsCount = parseInt(this.getAttribute('data-subjects-count') || '0', 10);
+      if (subjectsCount <= 0) {
+        alert('Cannot approve: no subjects found for this student\'s course and year.');
+        return;
+      }
+      document.getElementById('confirmText').textContent = 'Are you sure you want to approve this student?';
+      document.getElementById('confirmBtn').onclick = function() {
+        document.getElementById('approveForm').submit();
+      };
+      var modalEl = document.getElementById('confirmModal');
+      var modal = new bootstrap.Modal(modalEl);
+      modal.show();
+    });
+
+    document.getElementById('rejectBtn').addEventListener('click', function() {
+      document.getElementById('confirmText').textContent = 'Are you sure you want to reject this student?';
+      document.getElementById('confirmBtn').onclick = function() {
+        document.getElementById('rejectForm').submit();
+      };
+      var modalEl = document.getElementById('confirmModal');
+      var modal = new bootstrap.Modal(modalEl);
+      modal.show();
     });
   </script>
 
@@ -577,29 +633,41 @@ while ($row = $res->fetch_assoc()) {
         </thead>
         <tbody>
           <?php
-            $stmt = $conn->prepare("SELECT * FROM enroll ORDER BY lastname, firstname");
-            $stmt->execute();
-            $res = $stmt->get_result();
-            if ($res && $res->num_rows > 0) {
-              while ($s = $res->fetch_assoc()) {
+            $sq = $conn->prepare("SELECT * FROM enroll WHERE status = 'APPROVED' ORDER BY id ASC");
+            $sq->execute();
+            $r = $sq->get_result();
+            if ($r && $r->num_rows > 0) {
+              while ($s = $r->fetch_assoc()) {
                 $sid = (int)$s['id'];
                 $username = htmlspecialchars($s['username']);
                 $lastname = htmlspecialchars($s['lastname']);
                 $firstname = htmlspecialchars($s['firstname']);
-                $name = htmlspecialchars(trim($s['lastname'] . ', ' . $s['firstname']));
+                $middlename = htmlspecialchars($s['middlename']);
+                $elemName = htmlspecialchars($s['elemName']);
+                $elemYear = htmlspecialchars($s['elemYear']);
+                $juniorName = htmlspecialchars($s['juniorName']);
+                $juniorYear = htmlspecialchars($s['juniorYear']);
+                $seniorName = htmlspecialchars($s['seniorName']);
+                $seniorYear = htmlspecialchars($s['seniorYear']);
+                $sex = htmlspecialchars($s['sex']);
+                $dob = htmlspecialchars($s['dob']);
+                $phonenumber = htmlspecialchars($s['phonenumber']);
+                $guardianName = htmlspecialchars($s['guardianName']);
+                $guardianPhoneNumber = htmlspecialchars($s['guardianPhoneNumber']);
+                $guardianAddress = htmlspecialchars($s['guardianAddress']);
                 $course = htmlspecialchars($s['course']);
                 $year = htmlspecialchars($s['year']);
                 $section = htmlspecialchars($s['section'] ?? '');
-                $status = strtoupper($s['status'] ?? 'PENDING');
-                if ($status === 'APPROVED') {
-                  $badge = '<span class="badge bg-success">Approved</span>';
-                } elseif ($status === 'REJECTED') {
-                  $badge = '<span class="badge bg-danger">Rejected</span>';
-                } else {
-                  $badge = '<span class="badge bg-warning text-dark">Pending</span>';
-                }
-
-                // compute matching subjects count for this student
+                $email = htmlspecialchars($s['email']);
+                $name = htmlspecialchars(trim($lastname . ', ' . $firstname));
+                echo '<tr>';
+                echo '<td>' . $username . '</td>';
+                echo '<td>' . $name . '</td>';
+                echo '<td>' . $course . '</td>';
+                echo '<td>' . $year . '</td>';
+                echo '<td>' . ($section ?: '-') . '</td>';
+                echo '<td><span class="badge bg-warning text-dark">Enrolled</span></td>';
+                // compute number of matching subjects for this student's course/year
                 $subCount = 0;
                 $sc = $conn->prepare("SELECT COUNT(*) AS cnt FROM subjects WHERE course = ? AND year_level = ?");
                 $sc->bind_param('ss', $s['course'], $s['year']);
@@ -610,45 +678,36 @@ while ($row = $res->fetch_assoc()) {
 
                 $dataAttrs = ' data-id="' . $sid . '"'
                   . ' data-username="' . $username . '"'
-                  . ' data-email="' . htmlspecialchars($s['email']) . '"'
+                  . ' data-email="' . $email . '"'
                   . ' data-lastname="' . $lastname . '"'
                   . ' data-firstname="' . $firstname . '"'
-                  . ' data-middlename="' . htmlspecialchars($s['middlename']) . '"'
-                  . ' data-elemname="' . htmlspecialchars($s['elemName']) . '"'
-                  . ' data-elemyear="' . htmlspecialchars($s['elemYear']) . '"'
-                  . ' data-juniorname="' . htmlspecialchars($s['juniorName']) . '"'
-                  . ' data-junioryear="' . htmlspecialchars($s['juniorYear']) . '"'
-                  . ' data-seniorname="' . htmlspecialchars($s['seniorName']) . '"'
-                  . ' data-senioryear="' . htmlspecialchars($s['seniorYear']) . '"'
-                  . ' data-sex="' . htmlspecialchars($s['sex']) . '"'
-                  . ' data-dob="' . htmlspecialchars($s['dob']) . '"'
-                  . ' data-phonenumber="' . htmlspecialchars($s['phonenumber']) . '"'
-                  . ' data-guardianname="' . htmlspecialchars($s['guardianName']) . '"'
-                  . ' data-guardianphone="' . htmlspecialchars($s['guardianPhoneNumber']) . '"'
-                  . ' data-guardianaddress="' . htmlspecialchars($s['guardianAddress']) . '"'
+                  . ' data-middlename="' . $middlename . '"'
+                  . ' data-elemname="' . $elemName . '"'
+                  . ' data-elemyear="' . $elemYear . '"'
+                  . ' data-juniorname="' . $juniorName . '"'
+                  . ' data-junioryear="' . $juniorYear . '"'
+                  . ' data-seniorname="' . $seniorName . '"'
+                  . ' data-senioryear="' . $seniorYear . '"'
+                  . ' data-sex="' . $sex . '"'
+                  . ' data-dob="' . $dob . '"'
+                  . ' data-phonenumber="' . $phonenumber . '"'
+                  . ' data-guardianname="' . $guardianName . '"'
+                  . ' data-guardianphone="' . $guardianPhoneNumber . '"'
+                  . ' data-guardianaddress="' . $guardianAddress . '"'
                   . ' data-course="' . $course . '"'
                   . ' data-year="' . $year . '"'
                   . ' data-section="' . $section . '"'
                   . ' data-appointment_date="' . htmlspecialchars($s['appointment_date']) . '"'
-                  . ' data-time="' . htmlspecialchars($s['time']) . '"'
-                  . ' data-status="' . htmlspecialchars($status) . '"'
-                  . ' data-subjects-count="' . $subCount . '"';
-
-                echo '<tr>';
-                echo '<td>' . $username . '</td>';
-                echo '<td>' . $name . '</td>';
-                echo '<td>' . $course . '</td>';
-                echo '<td>' . $year . '</td>';
-                echo '<td>' . $section . '</td>';
-                echo '<td>' . $badge . '</td>';
+                  . ' data-time="' . htmlspecialchars($s['time']) . '"';
                 echo '<td><button type="button" class="btn btn-sm btn-primary student-open"' . $dataAttrs . '>Open</button></td>';
                 echo '</tr>';
               }
             } else {
-              echo '<tr><td colspan="7">No students found.</td></tr>';
+              echo '<tr><td colspan="8">No pending students.</td></tr>';
             }
-            $stmt->close();
+            $sq->close();
           ?>
+         
         </tbody>
       </table>
     </div>
@@ -686,10 +745,10 @@ while ($row = $res->fetch_assoc()) {
               <td>
                 <select name="year_level" class="form-select" required>
                   <option value="">Set</option>
-                  <option>I</option>
-                  <option>II</option>
-                  <option>III</option>
-                  <option>IV</option>
+                  <option>First Year</option>
+                  <option>Second Year</option>
+                  <option>Third Year</option>
+                  <option>Fourth Year</option>
                 </select>
               </td>
               <td><input type="number" name="hours" class="form-control" min="0" value="3" required></td>
