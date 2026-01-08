@@ -17,6 +17,7 @@ $middlename = $_POST['middlename'];
 $sex = $_POST['sex'];
 $dob = $_POST['dob'];
 $phonenumber = $_POST['phoneNumber'];
+$address = $_POST['address'];
 $guardianName = $_POST['guardianName'];
 $guardianPhoneNumber = $_POST['guardianPhoneNumber'];
 $guardianAddress = $_POST['guardianAddress'];
@@ -36,8 +37,8 @@ if ($check_result->num_rows > 0) {
     exit();
 }
 
-$sql = "INSERT INTO enroll (username, password, email, elemName, elemYear, juniorName, juniorYear, seniorName, seniorYear, lastname, firstname, middlename, sex, dob, phonenumber, guardianName, guardianPhoneNumber, guardianAddress, course, year, section, status, appointment_date, time)
-VALUES ('$username@student', '$password', '$email', '$elemName', '$elemYear', '$juniorName', '$juniorYear', '$seniorName', '$seniorYear', '$lastname', '$firstname', '$middlename', '$sex', '$dob', '$phonenumber', '$guardianName', '$guardianPhoneNumber', '$guardianAddress', '$course', '$year', '". $section ."','PENDING','$appointment_date','$time')";
+$sql = "INSERT INTO enroll (username, password, email, elemName, elemYear, juniorName, juniorYear, seniorName, seniorYear, lastname, firstname, middlename, sex, dob, phonenumber, address, guardianName, guardianPhoneNumber, guardianAddress, course, year, section, status, appointment_date, time)
+VALUES ('$username@student', '$password', '$email', '$elemName', '$elemYear', '$juniorName', '$juniorYear', '$seniorName', '$seniorYear', '$lastname', '$firstname', '$middlename', '$sex', '$dob', '$phonenumber', '$address', '$guardianName', '$guardianPhoneNumber', '$guardianAddress', '$course', '$year', '". $section ."','PENDING','$appointment_date','$time')";
 if ($conn->query($sql) === TRUE) {
   // decrement slots if appointment was selected
   if ($appointment_id > 0) {

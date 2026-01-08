@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 07, 2026 at 09:05 AM
+-- Generation Time: Jan 08, 2026 at 02:35 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -60,9 +60,9 @@ CREATE TABLE `appointments` (
 --
 
 INSERT INTO `appointments` (`id`, `date`, `start_time`, `end_time`, `slots`) VALUES
-(5, '2026-01-09', '13:00:00', '14:00:00', 0),
+(5, '2026-01-09', '13:00:00', '14:00:00', 1),
 (6, '2026-01-09', '15:00:00', '16:00:00', 3),
-(7, '2026-01-10', '10:00:00', '11:00:00', 1);
+(7, '2026-01-10', '10:00:00', '11:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -101,6 +101,7 @@ CREATE TABLE `enroll` (
   `sex` varchar(100) NOT NULL,
   `dob` date NOT NULL,
   `phonenumber` int(255) NOT NULL,
+  `address` varchar(1000) NOT NULL,
   `guardianName` varchar(1000) NOT NULL,
   `guardianPhoneNumber` int(255) NOT NULL,
   `guardianAddress` varchar(1000) NOT NULL,
@@ -117,8 +118,8 @@ CREATE TABLE `enroll` (
 -- Dumping data for table `enroll`
 --
 
-INSERT INTO `enroll` (`id`, `username`, `password`, `email`, `elemName`, `elemYear`, `juniorName`, `juniorYear`, `seniorName`, `seniorYear`, `lastname`, `firstname`, `middlename`, `sex`, `dob`, `phonenumber`, `guardianName`, `guardianPhoneNumber`, `guardianAddress`, `course`, `year`, `classroom`, `section`, `status`, `appointment_date`, `time`) VALUES
-(24, 'asdasdas', 'adasd', 'asdasd@adas', 'sadasds', '2312', 'asdasd', '12312', 'dasdas', '21312', 'sadasd', 'asd', 'adas', 'Male', '2026-01-21', 231312, 'sdasd', 213213, 'adads', 'BS Computer Science', 'Second Year', NULL, 'B', 'APPROVED', '2026-01-09', '3:00 PM - 4:00 PM');
+INSERT INTO `enroll` (`id`, `username`, `password`, `email`, `elemName`, `elemYear`, `juniorName`, `juniorYear`, `seniorName`, `seniorYear`, `lastname`, `firstname`, `middlename`, `sex`, `dob`, `phonenumber`, `address`, `guardianName`, `guardianPhoneNumber`, `guardianAddress`, `course`, `year`, `classroom`, `section`, `status`, `appointment_date`, `time`) VALUES
+(27, 'melvs@student', '123', 'mdmdmd@amma', 'dasdas', '1231', 'dasd', '2131', 'dasda', '2312', 'asdsa', 'asdasd', 'asda', 'Male', '2026-01-09', 2131312312, 'dssadasdsadas', 'asdadssadadasdsadasadasd', 2147483647, 'sdasdasdsadadasdsad', 'BS Computer Science', 'First Year', NULL, 'B', 'APPROVED', '2026-01-09', '1:00 PM - 2:00 PM');
 
 -- --------------------------------------------------------
 
@@ -184,8 +185,8 @@ CREATE TABLE `home_cards` (
 
 INSERT INTO `home_cards` (`id`, `title`, `description`, `image_path`, `status`, `sort_order`) VALUES
 (4, 'Content Management System', 'Using a CMS is the ability to easily set up and manage website elements such as carousels, blogs, footers, and more. For example, you can easily create and manage a carousel, which is a slideshow of images or other content, to showcase your services on your website. You can also set up and manage a blog, which allows you to regularly publish new content to your website.', 'image/home_cards/card_695de4da676c61.40477931.jpg', 1, 1),
-(5, 'Basic Messaging System', 'A basic messaging app can be a valuable tool for students or users to communicate with an administrator or other authorized parties. With this app, users can send messages that will be displayed in an inbox, where they can be reviewed and responded to as needed.', 'image/home_cards/card_695de2f2f2dbf1.07868084.jpg', 1, 2),
-(6, 'Digital Enrollment System', 'Enrollment systems typically include a wide range of features, including student registration, course management, academic records management, and reporting. Students can use the system to select and register for courses', 'image/home_cards/card_695de38e6268e8.68553922.jpg', 1, 3);
+(5, 'Basic Messaging System', 'A basic messaging app can be a valuable tool for students or users to communicate with an administrator or other authorized parties. With this app, users can send messages that will be displayed in an inbox, where they can be reviewed and responded to as needed.', 'image/home_cards/card_695de2f2f2dbf1.07868084.jpg', 1, 3),
+(6, 'Digital Enrollment System', 'Enrollment systems typically include a wide range of features, including student registration, course management, academic records management, and reporting. Students can use the system to select and register for courses', 'image/home_cards/card_695de38e6268e8.68553922.jpg', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -207,9 +208,7 @@ CREATE TABLE `subjects` (
 --
 
 INSERT INTO `subjects` (`id`, `name`, `course`, `instructor`, `year_level`, `hours`) VALUES
-(1, 'automata', 'BS Computer Science', 'Sir Gi', 'II', 3),
-(3, 'computer programming', 'BS Computer Science', 'Sir Gi', 'III', 5),
-(5, 'devops', 'BS Computer Engineering', 'Sir Gi', 'II', 3);
+(10, 'd', 'BS Computer Science', 'sd', 'First Year', 3);
 
 --
 -- Indexes for dumped tables
@@ -289,7 +288,7 @@ ALTER TABLE `contact`
 -- AUTO_INCREMENT for table `enroll`
 --
 ALTER TABLE `enroll`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `feature_card`
@@ -313,7 +312,7 @@ ALTER TABLE `home_cards`
 -- AUTO_INCREMENT for table `subjects`
 --
 ALTER TABLE `subjects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

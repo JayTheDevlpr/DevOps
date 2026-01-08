@@ -406,6 +406,7 @@ while ($row = $res->fetch_assoc()) {
               <label class="form-label">Contact number</label>
               <input type="text" readonly class="form-control" id="mPhone">
             </div>
+            
 
             <div class="">
               <label class="form-label">Guardian name</label>
