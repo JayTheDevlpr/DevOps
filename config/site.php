@@ -1,12 +1,13 @@
 <?php
-// site logo updated by admin (auto)
-$SITE_LOGO = 'image/logo-1767879424.png';
 // site profile updated by admin (auto)
-$SITE_INST = 'Arayat instituaaaaaaaaa';
+$SITE_INST = 'Arayat institute';
 $SITE_LOCATION = 'Arayat, Pampanga';
 $SITE_EMAIL = 'unknown@gmail.com';
 $SITE_PHONE = '09750737973';
 $SITE_TTY = '0975073797355';
+
+// site logo updated by admin (auto)
+$SITE_LOGO = 'image/logo-1767879424.png';
 
 
 
@@ -40,6 +41,7 @@ $SITE_NAME = 'DevOps System';
 
 // Additional site-wide settings can go here
 ?>
+
 
 
 

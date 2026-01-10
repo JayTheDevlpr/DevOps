@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 08, 2026 at 02:35 PM
+-- Generation Time: Jan 10, 2026 at 10:14 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -78,6 +78,13 @@ CREATE TABLE `contact` (
   `date_submitted` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `contact`
+--
+
+INSERT INTO `contact` (`id`, `name`, `email`, `message`, `date_submitted`) VALUES
+(5, 'melvin', 'melvin12312312312312123@gmail.com', 'asdasdsadasdasdsadasdasdasdasdasd', '2026-01-09');
+
 -- --------------------------------------------------------
 
 --
@@ -151,17 +158,13 @@ INSERT INTO `feature_card` (`id`, `header`, `title`, `body`, `footer`, `bg_color
 --
 
 CREATE TABLE `grades` (
-  `id` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `subject` varchar(100) NOT NULL,
-  `instructor` varchar(100) NOT NULL,
-  `prelim` decimal(5,2) DEFAULT NULL,
-  `midterm` decimal(5,2) DEFAULT NULL,
-  `finals` decimal(5,2) DEFAULT NULL,
-  `average` decimal(5,2) DEFAULT NULL,
-  `remarks` varchar(50) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `id` int(255) NOT NULL,
+  `username` varchar(1000) NOT NULL,
+  `subject` varchar(1000) NOT NULL,
+  `instructor` varchar(1000) NOT NULL,
+  `prelim` decimal(5,2) NOT NULL,
+  `midterm` decimal(5,2) NOT NULL,
+  `finals` decimal(5,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -208,7 +211,9 @@ CREATE TABLE `subjects` (
 --
 
 INSERT INTO `subjects` (`id`, `name`, `course`, `instructor`, `year_level`, `hours`) VALUES
-(10, 'd', 'BS Computer Science', 'sd', 'First Year', 3);
+(10, 'd', 'BS Computer Science', 'sd', 'First Year', 3),
+(11, 'devops', 'BS Computer Science', 'ako', 'First Year', 5),
+(12, 'artApp', 'BS Computer Science', 'wa', 'Second Yea', 3);
 
 --
 -- Indexes for dumped tables
@@ -282,7 +287,7 @@ ALTER TABLE `appointments`
 -- AUTO_INCREMENT for table `contact`
 --
 ALTER TABLE `contact`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `enroll`
@@ -300,7 +305,7 @@ ALTER TABLE `feature_card`
 -- AUTO_INCREMENT for table `grades`
 --
 ALTER TABLE `grades`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `home_cards`
@@ -312,7 +317,7 @@ ALTER TABLE `home_cards`
 -- AUTO_INCREMENT for table `subjects`
 --
 ALTER TABLE `subjects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

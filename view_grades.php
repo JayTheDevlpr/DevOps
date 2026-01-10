@@ -7,180 +7,190 @@ if (!isset($_SESSION['logged_in'])) {
 include 'config/plugins.php';
 require 'config/dbcon.php';
 
-// Check if username is provided
-if (!isset($_GET['username']) || empty($_GET['username'])) {
-    die("Invalid student.");
+if (!isset($_GET['username'])) {
+    header("Location: classroom.php");
+    exit();
 }
 
-$username = $conn->real_escape_string($_GET['username']);
+$username = $_GET['username'];
+$username_encoded = base64_encode(json_encode($username));
+$sql = "SELECT * FROM enroll WHERE username = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
 
-// ==========================
-// GET STUDENT INFO
-// ==========================
-$student_sql = "SELECT firstname, lastname, course, year, section FROM enroll WHERE username='$username' LIMIT 1";
-$student_result = $conn->query($student_sql);
-if (!$student_result || $student_result->num_rows === 0) die("Student not found.");
-$student = $student_result->fetch_assoc();
-
-// ==========================
-// SAVE GRADES IF POSTED
-// ==========================
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['grades']) && is_array($_POST['grades'])) {
-    foreach ($_POST['grades'] as $data) {
-        $subject = trim($conn->real_escape_string($data['subject'] ?? ''));
-        if ($subject === '') continue;
-
-        $instructor = trim($conn->real_escape_string($data['instructor'] ?? ''));
-        $prelim = isset($data['prelim']) && $data['prelim'] !== '' ? floatval($data['prelim']) : null;
-        $midterm = isset($data['midterm']) && $data['midterm'] !== '' ? floatval($data['midterm']) : null;
-        $finals = isset($data['finals']) && $data['finals'] !== '' ? floatval($data['finals']) : null;
-
-        $gradesEntered = array_filter([$prelim, $midterm, $finals], fn($v) => $v !== null);
-        $average = !empty($gradesEntered) ? round(array_sum($gradesEntered) / count($gradesEntered), 2) : null;
-        $remarks = $average !== null ? ($average >= 75 ? 'Passed' : 'Failed') : '';
-
-        $check_sql = "SELECT id FROM grades WHERE username='$username' AND subject='$subject'";
-        $check_res = $conn->query($check_sql);
-
-        if ($check_res && $check_res->num_rows > 0) {
-            $update_sql = "
-                UPDATE grades
-                SET instructor='$instructor', 
-                    prelim=" . ($prelim !== null ? $prelim : "NULL") . ",
-                    midterm=" . ($midterm !== null ? $midterm : "NULL") . ",
-                    finals=" . ($finals !== null ? $finals : "NULL") . ",
-                    average=" . ($average !== null ? $average : "NULL") . ",
-                    remarks='$remarks'
-                WHERE username='$username' AND subject='$subject'
-            ";
-            $conn->query($update_sql);
-        } else {
-            $insert_sql = "
-                INSERT INTO grades (username, subject, instructor, prelim, midterm, finals, average, remarks)
-                VALUES (
-                    '$username',
-                    '$subject',
-                    '$instructor',
-                    " . ($prelim !== null ? $prelim : "NULL") . ",
-                    " . ($midterm !== null ? $midterm : "NULL") . ",
-                    " . ($finals !== null ? $finals : "NULL") . ",
-                    " . ($average !== null ? $average : "NULL") . ",
-                    '$remarks'
-                )
-            ";
-            $conn->query($insert_sql);
-        }
-    }
-
-    echo "<div class='alert alert-success'>Grades saved successfully!</div>";
+if ($result->num_rows == 0) {
+    echo "Student not found.";
+    exit();
 }
 
-// ==========================
-// FETCH GRADES
-// ==========================
-$grades_sql = "SELECT subject, instructor, prelim, midterm, finals, average, remarks FROM grades WHERE username='$username' ORDER BY subject";
-$grades_result = $conn->query($grades_sql);
+$student = $result->fetch_assoc();
+$name = htmlspecialchars($student['firstname'] . ' ' . $student['middlename'] . ' ' . $student['lastname']);
+$course = htmlspecialchars($student['course']);
+$year = htmlspecialchars($student['year']);
+$section = htmlspecialchars($student['section'] ?? 'N/A');
 
-$grades = [];
-if ($grades_result && $grades_result->num_rows > 0) {
-    while ($row = $grades_result->fetch_assoc()) $grades[] = $row;
+// Fetch grades
+$grades_sql = "SELECT * FROM grades WHERE username = ?";
+$grades_stmt = $conn->prepare($grades_sql);
+$grades_stmt->bind_param("s", $username);
+$grades_stmt->execute();
+$grades_result = $grades_stmt->get_result();
+
+// Fetch subjects for the student's course and year
+$subjects_sql = "SELECT * FROM subjects WHERE course = ? AND year_level = ?";
+$subjects_stmt = $conn->prepare($subjects_sql);
+$subjects_stmt->bind_param("ss", $course, $year);
+$subjects_stmt->execute();
+$subjects_result = $subjects_stmt->get_result();
+
+// Prepare grades by subject
+$grades_by_subject = [];
+while ($grade = $grades_result->fetch_assoc()) {
+    $grade['average'] = round(($grade['prelim'] + $grade['midterm'] + $grade['finals']) / 3, 2);
+    $grade['remarks'] = $grade['average'] >= 75 ? 'Passed' : 'Failed';
+    $grades_by_subject[$grade['subject']] = $grade;
 }
+$i = 0;
 ?>
-
 <?php include __DIR__ . '/sidebar.php'; ?>
 
 <div class="container my-4">
-    <h1>Student Grades</h1>
+  <h1>View Grades</h1>
 
-    <!-- STUDENT INFO -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title"><?= htmlspecialchars($student['lastname'] . ', ' . $student['firstname']) ?></h5>
-            <p class="mb-1"><strong>Username:</strong> <?= htmlspecialchars($username) ?></p>
-            <p class="mb-1"><strong>Course:</strong> <?= htmlspecialchars($student['course']) ?></p>
-            <p class="mb-1"><strong>Year:</strong> <?= htmlspecialchars($student['year']) ?></p>
-            <p class="mb-0"><strong>Section:</strong> <?= htmlspecialchars($student['section'] ?? '-') ?></p>
-        </div>
+  <div class="container card p-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Student Information</h5>
+      <a href="classroom.php" class="btn btn-secondary">Back</a>
     </div>
-
-    <!-- GRADES FORM -->
-    <form method="post">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Grades</h5>
-
-                <table class="table table-striped table-bordered" id="gradesTable">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Subject</th>
-                            <th>Instructor</th>
-                            <th>Prelim</th>
-                            <th>Midterm</th>
-                            <th>Finals</th>
-                            <th>Average</th>
-                            <th>Remarks</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($grades)): ?>
-                            <?php foreach ($grades as $row): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($row['subject']) ?></td>
-                                    <td><?= htmlspecialchars($row['instructor']) ?></td>
-                                    <td><?= $row['prelim'] ?? '' ?></td>
-                                    <td><?= $row['midterm'] ?? '' ?></td>
-                                    <td><?= $row['finals'] ?? '' ?></td>
-                                    <td><?= $row['average'] ?? '' ?></td>
-                                    <td><?= htmlspecialchars($row['remarks']) ?></td>
-                                    <td><!-- no action for existing grades --></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td><input type="text" name="grades[][subject]" class="form-control"></td>
-                                <td><input type="text" name="grades[][instructor]" class="form-control"></td>
-                                <td><input type="number" step="0.01" name="grades[][prelim]" class="form-control"></td>
-                                <td><input type="number" step="0.01" name="grades[][midterm]" class="form-control"></td>
-                                <td><input type="number" step="0.01" name="grades[][finals]" class="form-control"></td>
-                                <td></td>
-                                <td></td>
-                                <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-
-                <button type="button" class="btn btn-info mb-2" id="addRow">Add Subject</button>
-                <br>
-                <button type="submit" class="btn btn-success">Save Grades</button>
-                <a href="javascript:history.back()" class="btn btn-secondary">← Back</a>
+    <div class="card-body mt-2">
+            <div class="row">
+                <div class="col-md-1">
+                    <i class="bi bi-person" style="font-size: 4rem;"></i>
+                </div>
+                <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-3">
+                    <p><strong>Name:</strong> <?php echo $name; ?></p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Username:</strong> <?php echo $username; ?></p>
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <p><strong>Course:</strong> <?php echo $course; ?></p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Year:</strong> <?php echo $year; ?></p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Section:</strong> <?php echo $section; ?></p>
+                </div>
+            </div>
             </div>
         </div>
-    </form>
-</div>
+    </div>
+  </div>
+
+  <div class="container card p-4 mt-4">
+    <div class="card-header">
+      <h5 class="mb-0">Subject Grades</h5>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Instructor</th>
+            <th>Prelim</th>
+            <th>Midterm</th>
+            <th>Finals</th>
+            <th>Average</th>
+            <th>Remarks</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php while ($subject = $subjects_result->fetch_assoc()): 
+            $subj_name = $subject['name'];
+            $existing = isset($grades_by_subject[$subj_name]) ? $grades_by_subject[$subj_name] : null;
+            $i++;
+          ?>
+            <tr data-subject="<?php echo htmlspecialchars($subj_name); ?>" data-id="<?php echo $i; ?>">
+              <td><?php echo htmlspecialchars($subj_name); ?></td>
+              <td><?php echo htmlspecialchars($subject['instructor']); ?></td>
+              <td><input type="number" step="0.01" class="form-control subj-grade-input" data-type="prelim" value="<?php echo $existing ? htmlspecialchars($existing['prelim']) : ''; ?>"></td>
+              <td><input type="number" step="0.01" class="form-control subj-grade-input" data-type="midterm" value="<?php echo $existing ? htmlspecialchars($existing['midterm']) : ''; ?>"></td>
+              <td><input type="number" step="0.01" class="form-control subj-grade-input" data-type="finals" value="<?php echo $existing ? htmlspecialchars($existing['finals']) : ''; ?>"></td>
+              <td><input type="number" step="0.01" class="form-control" id="subj-average-<?php echo $i; ?>" readonly value="<?php echo $existing ? htmlspecialchars($existing['average']) : ''; ?>"></td>
+              <td><input type="text" class="form-control" id="subj-remarks-<?php echo $i; ?>" readonly value="<?php echo $existing ? htmlspecialchars($existing['remarks']) : ''; ?>"></td>
+              <td><button type="button" class="btn <?php echo $existing ? 'btn-success' : 'btn-primary'; ?> subj-action-btn" data-action="<?php echo $existing ? 'update' : 'add'; ?>"><?php echo $existing ? 'Update' : 'Add'; ?></button></td>
+            </tr>
+          <?php endwhile; ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class=" ">
+  
+  </div>
 
 <script>
-// Add new row dynamically
-document.getElementById('addRow').addEventListener('click', function() {
-    const tbody = document.getElementById('gradesTable').getElementsByTagName('tbody')[0];
-    const row = tbody.insertRow();
-    row.innerHTML = `
-        <td><input type="text" name="grades[][subject]" class="form-control"></td>
-        <td><input type="text" name="grades[][instructor]" class="form-control"></td>
-        <td><input type="number" step="0.01" name="grades[][prelim]" class="form-control gradeInput"></td>
-        <td><input type="number" step="0.01" name="grades[][midterm]" class="form-control gradeInput"></td>
-        <td><input type="number" step="0.01" name="grades[][finals]" class="form-control gradeInput"></td>
-        <td></td>
-        <td></td>
-        <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
-    `;
-});
+var username = JSON.parse(atob('<?php echo $username_encoded; ?>'));
+$(document).ready(function(){
+    $('.subj-grade-input').on('input', function(){
+        var row = $(this).closest('tr');
+        var id = row.data('id');
+        var prelim = parseInt(row.find('[data-type="prelim"]').val()) || 0;
+        var midterm = parseInt(row.find('[data-type="midterm"]').val()) || 0;
+        var finals = parseInt(row.find('[data-type="finals"]').val()) || 0;
+        var average = (prelim + midterm + finals) / 3;
+        $('#subj-average-' + id).val(average.toFixed(2));
+        var remarks = average >= 75 ? 'Passed' : 'Failed';
+        $('#subj-remarks-' + id).val(remarks);
+    });
 
-// Remove row
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('removeRow')) {
-        e.target.closest('tr').remove();
-    }
+    $('.subj-action-btn').on('click', function(){
+        var row = $(this).closest('tr');
+        var subject = row.data('subject');
+        var id = row.data('id');
+        var instructor = row.find('td:nth-child(2)').text();
+        var prelim = row.find('[data-type="prelim"]').val();
+        var midterm = row.find('[data-type="midterm"]').val();
+        var finals = row.find('[data-type="finals"]').val();
+        var average = $('#subj-average-' + id).val();
+        var remarks = $('#subj-remarks-' + id).val();
+
+        $.ajax({
+            url: 'config/addGrade.php',
+            type: 'POST',
+          dataType: 'json',
+            data: {
+                username: username,
+                subject: subject,
+                instructor: instructor,
+                prelim: prelim,
+                midterm: midterm,
+                finals: finals
+            },
+          success: function(response){
+            var res = response;
+            alert(res.message);
+            if(res.success){
+              location.reload();
+            }
+          },
+          error: function(xhr, status, error){
+            var details = xhr.responseText ? '\nResponse: ' + xhr.responseText : '';
+            alert('AJAX Error: ' + status + ' - ' + error + details);
+            console.error('AJAX error', status, error, xhr.responseText);
+          }
+        });
+    });
 });
 </script>
+  
