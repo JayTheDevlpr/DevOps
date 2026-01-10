@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 10, 2026 at 01:27 PM
+-- Generation Time: Jan 10, 2026 at 03:01 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -60,9 +60,9 @@ CREATE TABLE `appointments` (
 --
 
 INSERT INTO `appointments` (`id`, `date`, `start_time`, `end_time`, `slots`) VALUES
-(5, '2026-01-09', '13:00:00', '14:00:00', 1),
-(6, '2026-01-09', '15:00:00', '16:00:00', 3),
-(7, '2026-01-10', '10:00:00', '11:00:00', 0);
+(8, '2026-01-23', '12:00:00', '13:00:00', 3),
+(9, '2026-01-22', '10:00:00', '11:00:00', 0),
+(10, '2026-02-05', '07:00:00', '08:00:00', 3);
 
 -- --------------------------------------------------------
 
@@ -127,7 +127,7 @@ CREATE TABLE `enroll` (
 
 INSERT INTO `enroll` (`id`, `username`, `password`, `email`, `elemName`, `elemYear`, `juniorName`, `juniorYear`, `seniorName`, `seniorYear`, `lastname`, `firstname`, `middlename`, `sex`, `dob`, `phonenumber`, `address`, `guardianName`, `guardianPhoneNumber`, `guardianAddress`, `course`, `year`, `classroom`, `section`, `status`, `appointment_date`, `time`) VALUES
 (27, 'melvs@student', '123', 'mdmdmd@amma', 'dasdas', '1231', 'dasd', '2131', 'dasda', '2312', 'asdsa', 'asdasd', 'asda', 'Male', '2026-01-09', 2131312312, 'dssadasdsadas', 'asdadssadadasdsadasadasd', 2147483647, 'sdasdasdsadadasdsad', 'BS Computer Science', 'First Year', NULL, 'B', 'APPROVED', '2026-01-09', '1:00 PM - 2:00 PM'),
-(28, 'lap@student', '123', 'lap@lap', 'sadsa', '2000', 'dsada', '200', 'sodfjsapod', '2000', 'aodsjh', 'salkjh', 'adskhj', 'Male', '2025-12-31', 2147483647, 'sadasdasdasdasdasd', '999dtfhyf', 2147483647, 'stsetset', 'BS Information Technology', 'First Year', NULL, 'A', 'PENDING', '0000-00-00', '');
+(28, 'lap@student', '123', 'lap@lap', 'sadsa', '2000', 'dsada', '200', 'sodfjsapod', '2000', 'aodsjh', 'salkjh', 'adskhj', 'Male', '2025-12-31', 2147483647, 'sadasdasdasdasdasd', '999dtfhyf', 2147483647, 'stsetset', 'BS Information Technology', 'First Year', NULL, 'A', 'APPROVED', '0000-00-00', '');
 
 -- --------------------------------------------------------
 
@@ -175,7 +175,9 @@ CREATE TABLE `grades` (
 --
 
 INSERT INTO `grades` (`id`, `username`, `subject`, `instructor`, `prelim`, `midterm`, `finals`, `average`, `remarks`) VALUES
-(3, 'melvs@student', 'd', 'sd', 90, 90, 50, 77, 'Passed');
+(3, 'melvs@student', 'd', 'sd', 90, 90, 50, 77, 'Passed'),
+(4, 'melvs@student', 'devops', 'ako', 89, 90, 79, 86, 'Passed'),
+(5, 'lap@student', 'cs elective', 'ji', 60, 75, 90, 75, 'Passed');
 
 -- --------------------------------------------------------
 
@@ -224,7 +226,7 @@ INSERT INTO `subjects` (`id`, `name`, `course`, `instructor`, `year_level`, `hou
 (10, 'd', 'BS Computer Science', 'sd', 'First Year', 3),
 (11, 'devops', 'BS Computer Science', 'ako', 'First Year', 5),
 (12, 'artApp', 'BS Computer Science', 'wa', 'Second Yea', 3),
-(13, 'dada', 'BS Information Technology', 'dasdads', 'First Year', 3);
+(15, 'cs elective', 'BS Information Technology', 'ji', 'First Year', 4);
 
 --
 -- Indexes for dumped tables
@@ -292,7 +294,7 @@ ALTER TABLE `accounts`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `contact`
@@ -316,7 +318,7 @@ ALTER TABLE `feature_card`
 -- AUTO_INCREMENT for table `grades`
 --
 ALTER TABLE `grades`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `home_cards`
@@ -328,7 +330,7 @@ ALTER TABLE `home_cards`
 -- AUTO_INCREMENT for table `subjects`
 --
 ALTER TABLE `subjects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
