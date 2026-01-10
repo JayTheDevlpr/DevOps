@@ -83,3 +83,8 @@
 2026-01-08 20:47:46 - PROFILE: Profile updated: inst=Arayat institute email=unknown@gmail.com
 2026-01-10 13:37:23 - PROFILE: Wrote profile to site.php bytes=725
 2026-01-10 13:37:23 - PROFILE: Profile updated: inst=Arayat institute email=unknown@gmail.com
+2026-01-10 14:55:10 - COVER: Uploaded cover cover-1768053310.jpg title=123123
+2026-01-10 14:55:18 - COVER: Uploaded cover cover-1768053318.jpg title=123123
+2026-01-10 14:55:25 - COVER: Updated cover image/cover-1768053318.jpg title=1231235555
+2026-01-10 14:55:51 - COVER: Deleted cover file: C:\xampp\htdocs\push\DevOps\image\cover-1768053318.jpg
+2026-01-10 14:55:55 - COVER: Deleted cover file: C:\xampp\htdocs\push\DevOps\image\cover-1768053310.jpg

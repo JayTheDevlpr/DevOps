@@ -1,5 +1,9 @@
 <?php
 SESSION_START();
+if (!isset($_SESSION['logged_in'])) {
+    header("Location: index.php");
+    exit();
+}
 include 'config/plugins.php';
 require_once __DIR__ . '/config/site.php';
 require_once __DIR__ . '/config/dbcon.php';

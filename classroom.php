@@ -84,6 +84,10 @@ require 'config/dbcon.php';
 $has_section = false;
 $check = $conn->query("SHOW COLUMNS FROM enroll LIKE 'section'");
 if ($check && $check->num_rows > 0) $has_section = true;
+// Detect if status column exists
+$has_status = false;
+$check_status = $conn->query("SHOW COLUMNS FROM enroll LIKE 'status'");
+if ($check_status && $check_status->num_rows > 0) $has_status = true;
 
 // Build filters
 $conds = [];
@@ -91,6 +95,10 @@ if (!empty($_GET['course'])) $conds[] = "course='".$conn->real_escape_string($_G
 if (!empty($_GET['year']))   $conds[] = "year='".$conn->real_escape_string($_GET['year'])."'";
 if (!empty($_GET['section']) && $has_section)
   $conds[] = "section='".$conn->real_escape_string($_GET['section'])."'";
+// Exclude pending students when status column exists
+if ($has_status) {
+  $conds[] = "(status IS NULL OR LOWER(status) != 'pending')";
+}
 
 // Build query
 $fields = "firstname, lastname, username, course, year";

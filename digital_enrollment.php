@@ -667,7 +667,7 @@ while ($row = $res->fetch_assoc()) {
                 echo '<td>' . $course . '</td>';
                 echo '<td>' . $year . '</td>';
                 echo '<td>' . ($section ?: '-') . '</td>';
-                echo '<td><span class="badge bg-warning text-dark">Enrolled</span></td>';
+                echo '<td><span class="badge bg-success">Enrolled</span></td>';
                 // compute number of matching subjects for this student's course/year
                 $subCount = 0;
                 $sc = $conn->prepare("SELECT COUNT(*) AS cnt FROM subjects WHERE course = ? AND year_level = ?");
