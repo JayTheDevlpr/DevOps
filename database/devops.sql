@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 10, 2026 at 10:14 AM
+-- Generation Time: Jan 10, 2026 at 01:27 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -126,7 +126,8 @@ CREATE TABLE `enroll` (
 --
 
 INSERT INTO `enroll` (`id`, `username`, `password`, `email`, `elemName`, `elemYear`, `juniorName`, `juniorYear`, `seniorName`, `seniorYear`, `lastname`, `firstname`, `middlename`, `sex`, `dob`, `phonenumber`, `address`, `guardianName`, `guardianPhoneNumber`, `guardianAddress`, `course`, `year`, `classroom`, `section`, `status`, `appointment_date`, `time`) VALUES
-(27, 'melvs@student', '123', 'mdmdmd@amma', 'dasdas', '1231', 'dasd', '2131', 'dasda', '2312', 'asdsa', 'asdasd', 'asda', 'Male', '2026-01-09', 2131312312, 'dssadasdsadas', 'asdadssadadasdsadasadasd', 2147483647, 'sdasdasdsadadasdsad', 'BS Computer Science', 'First Year', NULL, 'B', 'APPROVED', '2026-01-09', '1:00 PM - 2:00 PM');
+(27, 'melvs@student', '123', 'mdmdmd@amma', 'dasdas', '1231', 'dasd', '2131', 'dasda', '2312', 'asdsa', 'asdasd', 'asda', 'Male', '2026-01-09', 2131312312, 'dssadasdsadas', 'asdadssadadasdsadasadasd', 2147483647, 'sdasdasdsadadasdsad', 'BS Computer Science', 'First Year', NULL, 'B', 'APPROVED', '2026-01-09', '1:00 PM - 2:00 PM'),
+(28, 'lap@student', '123', 'lap@lap', 'sadsa', '2000', 'dsada', '200', 'sodfjsapod', '2000', 'aodsjh', 'salkjh', 'adskhj', 'Male', '2025-12-31', 2147483647, 'sadasdasdasdasdasd', '999dtfhyf', 2147483647, 'stsetset', 'BS Information Technology', 'First Year', NULL, 'A', 'PENDING', '0000-00-00', '');
 
 -- --------------------------------------------------------
 
@@ -162,10 +163,19 @@ CREATE TABLE `grades` (
   `username` varchar(1000) NOT NULL,
   `subject` varchar(1000) NOT NULL,
   `instructor` varchar(1000) NOT NULL,
-  `prelim` decimal(5,2) NOT NULL,
-  `midterm` decimal(5,2) NOT NULL,
-  `finals` decimal(5,2) NOT NULL
+  `prelim` int(255) NOT NULL,
+  `midterm` int(255) NOT NULL,
+  `finals` int(255) NOT NULL,
+  `average` int(255) NOT NULL,
+  `remarks` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `grades`
+--
+
+INSERT INTO `grades` (`id`, `username`, `subject`, `instructor`, `prelim`, `midterm`, `finals`, `average`, `remarks`) VALUES
+(3, 'melvs@student', 'd', 'sd', 90, 90, 50, 77, 'Passed');
 
 -- --------------------------------------------------------
 
@@ -213,7 +223,8 @@ CREATE TABLE `subjects` (
 INSERT INTO `subjects` (`id`, `name`, `course`, `instructor`, `year_level`, `hours`) VALUES
 (10, 'd', 'BS Computer Science', 'sd', 'First Year', 3),
 (11, 'devops', 'BS Computer Science', 'ako', 'First Year', 5),
-(12, 'artApp', 'BS Computer Science', 'wa', 'Second Yea', 3);
+(12, 'artApp', 'BS Computer Science', 'wa', 'Second Yea', 3),
+(13, 'dada', 'BS Information Technology', 'dasdads', 'First Year', 3);
 
 --
 -- Indexes for dumped tables
@@ -293,7 +304,7 @@ ALTER TABLE `contact`
 -- AUTO_INCREMENT for table `enroll`
 --
 ALTER TABLE `enroll`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `feature_card`
@@ -305,7 +316,7 @@ ALTER TABLE `feature_card`
 -- AUTO_INCREMENT for table `grades`
 --
 ALTER TABLE `grades`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `home_cards`
@@ -317,7 +328,7 @@ ALTER TABLE `home_cards`
 -- AUTO_INCREMENT for table `subjects`
 --
 ALTER TABLE `subjects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
