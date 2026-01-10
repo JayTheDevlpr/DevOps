@@ -4,7 +4,8 @@ $SITE_INST = 'Arayat institute';
 $SITE_LOCATION = 'Arayat, Pampanga';
 $SITE_EMAIL = 'unknown@gmail.com';
 $SITE_PHONE = '09750737973';
-$SITE_TTY = '0975073797355';
+$SITE_TTY = '09750737973';
+
 
 // site logo updated by admin (auto)
 $SITE_LOGO = 'image/logo-1767879424.png';
@@ -41,6 +42,7 @@ $SITE_NAME = 'DevOps System';
 
 // Additional site-wide settings can go here
 ?>
+
 
 
 

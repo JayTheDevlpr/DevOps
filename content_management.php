@@ -106,13 +106,13 @@ require_once __DIR__ . '/config/dbcon.php';
         <div class="mb-3 row">
           <label class="col-sm-1 col-form-label text-end text-end-to-left" style="font-weight:600">Phone</label>
           <div class="col-sm-11">
-            <input name="phone" type="text" class="form-control" value="<?= htmlspecialchars($SITE_PHONE) ?>">
+            <input name="phone" type="text" maxlength="11" class="form-control" value="<?= htmlspecialchars($SITE_PHONE) ?>">
           </div>
         </div>
         <div class="mb-3 row">
           <label class="col-sm-1 col-form-label text-end text-end-to-left" style="font-weight:600">TTY</label>
           <div class="col-sm-11">
-            <input name="tty" type="text" class="form-control" value="<?= htmlspecialchars($SITE_TTY) ?>">
+            <input name="tty" type="text" maxlength="11" class="form-control" value="<?= htmlspecialchars($SITE_TTY) ?>">
           </div>
         </div>
 
